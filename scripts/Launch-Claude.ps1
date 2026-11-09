@@ -73,5 +73,13 @@ if ($ConfigDir) {
     $env:CLAUDE_CONFIG_DIR = $ConfigDir
 }
 
+# Keep profile taskbar labels active (one helper per user session).
+$labelHelper = Join-Path $PSScriptRoot 'Set-ClaudeTaskbarLabels.ps1'
+if (Test-Path -LiteralPath $labelHelper) {
+    $labelPowerShell = Join-Path $env:WINDIR 'System32\WindowsPowerShell\v1.0\powershell.exe'
+    $labelArgs = '-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "{0}"' -f $labelHelper
+    Start-Process -FilePath $labelPowerShell -ArgumentList $labelArgs -WindowStyle Hidden
+}
+
 # Launch. Different --user-data-dir => separate singleton lock => parallel instance.
 Start-Process -FilePath $exe -ArgumentList "--user-data-dir=$ProfileDir"

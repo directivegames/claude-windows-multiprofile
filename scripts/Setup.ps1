@@ -192,7 +192,7 @@ Write-Host "Found Claude $($pkg.Version) at $($pkg.InstallLocation)" -Foreground
 # --- Copy launcher + router scripts to a stable location -------------------
 $binDir = Join-Path $InstallDir 'bin'
 New-Item -ItemType Directory -Force -Path $binDir | Out-Null
-foreach ($f in 'Launch-Claude.ps1', 'launch.vbs', 'ClaudeOpenShim.ps1', 'Arm-ClaudeLogin.ps1') {
+foreach ($f in 'Launch-Claude.ps1', 'launch.vbs', 'ClaudeOpenShim.ps1', 'Arm-ClaudeLogin.ps1', 'Set-ClaudeTaskbarLabels.ps1') {
     Copy-Item (Join-Path $scriptRoot $f) $binDir -Force
 }
 $vbs         = Join-Path $binDir 'launch.vbs'
