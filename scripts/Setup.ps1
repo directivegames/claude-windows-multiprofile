@@ -46,11 +46,11 @@
     required for the Cowork VM to start (the native VM service resolves rootfs.vhdx
     under %APPDATA% regardless of --user-data-dir).
 
-.PARAMETER ConfigDir
+.PARAMETER ConfigDirOverrides
     Optional hashtable mapping a profile name to a Claude Code / Cowork config
     directory (CLAUDE_CONFIG_DIR), overriding the derived ~\.claude-<name>.
 
-.PARAMETER DataDir
+.PARAMETER DataDirOverrides
     Optional hashtable mapping a profile name to a data directory, overriding the
     derived %APPDATA%\Claude-<name>. MUST stay directly under %APPDATA% or Cowork
     breaks (see the Cowork note below).
@@ -82,8 +82,10 @@ param(
     [string]$DefaultProfile = 'None',
     [switch]$ReuseDefaultForWork,
     [string]$InstallDir = (Join-Path $env:USERPROFILE 'ClaudeProfiles'),
-    [hashtable]$ConfigDir = @{},
-    [hashtable]$DataDir = @{},
+    [Alias('ConfigDir')]
+    [hashtable]$ConfigDirOverrides = @{},
+    [Alias('DataDir')]
+    [hashtable]$DataDirOverrides = @{},
     [switch]$NoProtocolRouting,
     [switch]$LoginShortcuts
 )
@@ -238,8 +240,8 @@ foreach ($name in $Profile) {
     }
 
     # Per-profile overrides.
-    if ($DataDir.ContainsKey($name))   { $dataDir   = $DataDir[$name] }
-    if ($ConfigDir.ContainsKey($name)) { $configDir = $ConfigDir[$name] }
+    if ($DataDirOverrides.ContainsKey($name))   { $dataDir   = $DataDirOverrides[$name] }
+    if ($ConfigDirOverrides.ContainsKey($name)) { $configDir = $ConfigDirOverrides[$name] }
 
     New-Item -ItemType Directory -Force -Path $dataDir | Out-Null
     if ($configDir) {
